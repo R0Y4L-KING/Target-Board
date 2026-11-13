@@ -423,14 +423,14 @@
         window.setTimeout(hideSplash, wait);
       }
 
-      if (document.readyState === 'complete') {
-        scheduleHide();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', scheduleHide);
       } else {
-        window.addEventListener('load', scheduleHide);
+        scheduleHide();
       }
 
       // Fail-safe: never let the splash block the page.
-      window.setTimeout(hideSplash, 5000);
+      window.setTimeout(hideSplash, 3500);
 
       // Tap to skip
       if (splash) splash.addEventListener('click', hideSplash);
