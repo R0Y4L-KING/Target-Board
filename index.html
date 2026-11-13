@@ -414,13 +414,23 @@
         }
       }
 
-      // Minimum splash time, then fade out (works even if fonts/images are slow).
+      // Keep the splash on screen for a minimum time, then fade out.
       var MIN_SPLASH = 1700;
-      window.setTimeout(hideSplash, MIN_SPLASH);
+      var started = Date.now();
 
-      // Never let the splash block the page.
-      window.addEventListener('load', function () { window.setTimeout(hideSplash, 300); });
-      window.setTimeout(hideSplash, 4000);
+      function scheduleHide() {
+        var wait = Math.max(0, MIN_SPLASH - (Date.now() - started));
+        window.setTimeout(hideSplash, wait);
+      }
+
+      if (document.readyState === 'complete') {
+        scheduleHide();
+      } else {
+        window.addEventListener('load', scheduleHide);
+      }
+
+      // Fail-safe: never let the splash block the page.
+      window.setTimeout(hideSplash, 5000);
 
       // Tap to skip
       if (splash) splash.addEventListener('click', hideSplash);
